@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">Assign Users to Task</h2>
+
+    <form method="POST" id="data-form">
+        {% csrf_token %}
+        <div id="field-container" class="mb-3">
+            <div class="input-group mb-2">
+                <select name="fields[]" class="form-select">
+                    <option selected disabled>Select a user</option>
+                    {% for user in users %}
+                        <option value="{{ user.id }}">{{ user.username }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="d-flex gap-2">
+            <button type="button" id="add-field" class="btn btn-primary">Add User</button>
+            <button type="submit" class="btn btn-success">Submit</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const limit = {{ limit }};
+    let fieldCount = 1;
+
+    document.getElementById("add-field").addEventListener("click", function() {
+        if (fieldCount >= limit) {
+            alert("Maximum user capacity reached! No additional users can be accommodated at this time. Please try again later");
+            return;
+        }
+        const container = document.getElementById("field-container");
+        const newField = document.createElement("div");
+        newField.classList.add("input-group", "mb-2");
+        newField.innerHTML = `<select name="fields[]" class="form-select">
+                                  <option selected disabled>Select a user</option>
+                                  {% for user in users %}
+                                      <option value="{{ user.id }}">{{ user.username }}</option>
+                                  {% endfor %}
+                              </select>`;
+        container.appendChild(newField);
+        fieldCount++;
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+    const successMessage = '{{ success_message }}';
+    const errors = {{ errors|safe }};
+
+    if (successMessage) {
+        if (confirm(successMessage + '\n\nClick OK to go to Tasks.')) {
+            window.location.href = '{% url 'task_view' %}';
+        }
+    }
+
+    if (errors.length > 0) {
+        let errorMsg = 'Errors:\n';
+        errors.forEach(error => {
+            errorMsg += `- ${error}\n`;
+        });
+        alert(errorMsg);
+    }
+    });
+
+</script>
+{% endblock %}

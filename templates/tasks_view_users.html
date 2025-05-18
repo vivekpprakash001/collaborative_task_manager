@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Task Update Page</h1>
+    <div class="tasks-container">
+        <div class="task-card">
+            <p><strong>Task Title:</strong> {{ task_title }}</p>
+            <p><strong>Description:</strong> {{ description }}</p>
+            <p><strong>Status:</strong> {{ status }}</p>
+            <p><strong>Last Update:</strong> {{ updated_at }}</p>
+        </div>
+    </div>
+
+    <form id="updateForm" class="mb-4">
+        <input type="hidden" id="taskId" value="{{ task_id }}">
+        <input type="hidden" id="userName" value="{{ request.user.username }}">
+        <div class="mb-3">
+            <label for="updateText" class="form-label">Update</label>
+            <input type="text" id="updateText" class="form-control" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Send Update</button>
+    </form>
+
+    <h2>Updates</h2>
+    <div id="updates" class="border rounded p-3" style="height: 250px; overflow-y: auto;">
+        {% for update in updates %}
+            <div class="mb-2">{{ update.timestamp}} : {{ update.user_name }} --> {{ update.update_text }}</div>
+        {% endfor %}
+    </div>
+</div>
+
+<script>
+    const ws = new WebSocket('ws://localhost:6789');
+
+    ws.onopen = () => {
+        console.log('WebSocket connection opened');
+    };
+
+    ws.onmessage = event => {
+        try {
+            const data = JSON.parse(event.data);
+            const taskId = document.getElementById('taskId').value.trim();
+            if (String(taskId) === String(data.task_id)) {
+                const updateDiv = document.createElement('div');
+                updateDiv.textContent = `${data.timestamp} : ${data.user_name} --> ${data.update_text}`;
+                updateDiv.classList.add('mb-2');
+                document.getElementById('updates').appendChild(updateDiv);
+            }
+        } catch (e) {
+            console.error('Invalid JSON received:', event.data);
+        }
+    };
+
+    ws.onerror = error => {
+        console.error('WebSocket error:', error);
+    };
+
+    ws.onclose = () => {
+        console.log('WebSocket connection closed');
+    };
+
+    document.getElementById('updateForm').onsubmit = e => {
+        e.preventDefault();
+        const taskId = document.getElementById('taskId').value.trim();
+        const updateText = document.getElementById('updateText').value.trim();
+        const userName = document.getElementById('userName').value.trim();
+
+        if (!taskId || !updateText || !userName) {
+            alert('All fields are required!');
+            return;
+        }
+
+        const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: true };
+        const timestamp = new Date().toLocaleString('en-US', options);
+        const message = JSON.stringify({task_id: taskId, update_text: updateText, user_name: userName, timestamp: timestamp});
+        ws.send(message);
+
+        document.getElementById('updateText').value = '';
+    };
+</script>
+{% endblock %}

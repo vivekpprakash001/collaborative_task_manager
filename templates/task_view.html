@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Task and User Management</h2>
+
+    <div class="content-container">
+        <!-- Tasks Container -->
+        <div class="tasks-container">
+            <div class="task-card">
+                <p><strong>Tasks Tile : </strong> {{ task_title }}</p>
+                <p><strong>Description : </strong> {{ description }}</p>
+                <p><strong>Created At : </strong> {{ created_at }}</p>
+                <p><strong>Updated At : </strong> {{ updated_at }}</p>
+                <p><strong>Status : </strong> {{ status }}</p>
+            </div>
+        </div>
+
+        <!-- Users Table -->
+        <div class="users-table">
+            <h2>Assigned Users</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>User Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.user_id }}</td>
+                        <td>{{ user.user_name }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
