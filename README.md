@@ -23,7 +23,7 @@ A Django-based web application for real-time task management and collaboration.
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/yourusername/collaborative_task_manager.git
+   git clone https://github.com/vivekpprakash001/collaborative_task_manager
    cd collaborative_task_manager
    ```
 
@@ -69,3 +69,33 @@ A Django-based web application for real-time task management and collaboration.
     ```bash
    python broadcast_server.py
    ```
+
+## Flow of the Porject
+
+1. **Admin Privileges**
+    
+    *Admin can be created using the step 5 in the Installation
+    *Creation of task
+    *Assign users to the task
+    *User Add/Edit/Delete Operations
+    
+2. **User Privileges**
+    
+    *Listing of the tasks available for the user
+    *User can view the task
+    *User can add the real time update to the task which can be displayed to other user who are assigned to the same task
+    
+# Sample Users
+
+1. **Admin**
+    username --> admin
+    password --> q1w2e3r4
+   
+2. **User1**
+    username --> user1
+    password --> u1@q1w2e3r4
+
+3. **User2**
+    username --> user2
+    password --> u2@q1w2e3r4
+
